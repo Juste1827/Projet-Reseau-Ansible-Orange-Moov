@@ -79,19 +79,12 @@ docker run --rm -v ${PWD}:/work -w /work netauto-ansible-lab ansible-playbook pl
 
 `--check` = dry-run (équivalent `terraform plan`). Avec `live: false`, les tasks SSH sont **skipped**, le template intended s’écrit quand même.
 
-## Quand tu auras GNS3 / EVE-NG / CML
 
-1. Remplace `ansible_host` par les IP de tes VM.
-2. Copie `inventory/group_vars/all/vault.yml.example` → `vault.yml` puis `ansible-vault encrypt`.
-3. Backup : `ansible-playbook playbooks/02-backup-config.yml -e live=true --ask-vault-pass`
-4. Plan : `ansible-playbook playbooks/01-deploy-base.yml --check --diff -e live=true --ask-vault-pass`
-5. Apply : enlève `--check` seulement après lecture du diff.
-
-## Phrase CV (alignée sur ce dépôt)
+##  Résumé projet (alignée sur ce dépôt)
 
 > Automatisation réseau & IaC (Ansible) : playbooks multi-constructeurs (Cisco IOS, Huawei VRP) pour une config de base (hostname, VLAN, IP), source de vérité YAML, rôles idempotents (`state: merged`), garde-fou `--check` / `live=false`, secrets Vault, preuve d’idempotence par tests.
 
-## Limites (honnêteté entretien)
+## Limites (honnêteté)
 
 - Pas de routeurs physiques dans ce repo : le SSH live est **opt-in**.
 - `community.network` (Huawei CE) est en maintenance ; un cœur NE/AR Orange viserait `huaweidatacom.ne`.
