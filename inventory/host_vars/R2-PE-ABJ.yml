@@ -1,0 +1,19 @@
+---
+# WHY: même intention métier que R1 (VLAN 10/20, lien P2P), mais noms Huawei :
+# Vlanif10 (pas Vlan10), GigabitEthernet0/0/0 (3 niveaux).
+
+hostname: R2-PE-ABJ
+
+l3_interfaces:
+  - name: GigabitEthernet0/0/0
+    description: "P2P-to-R1-Cisco"
+    ipv4: 10.0.0.2/30
+    enabled: true
+  - name: Vlanif10
+    description: "SVI-DATA"
+    ipv4: 10.10.10.2/24
+    enabled: true
+  - name: Vlanif20
+    description: "SVI-VOICE"
+    ipv4: 10.20.20.2/24
+    enabled: true

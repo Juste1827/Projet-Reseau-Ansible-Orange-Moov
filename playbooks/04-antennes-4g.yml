@@ -1,0 +1,12 @@
+---
+# WHY un seul playbook pour 50 antennes :
+# Ansible prend hosts: antennes_4g et RÉPÈTE le rôle sur chaque hôte.
+# 50 x 15 min à la main ≈ 12 h 30. Ici : N sessions SSH en parallèle (forks).
+# Sans routeur : live=false => les modules IOS sont skipped, le template + debug tournent.
+
+- name: "Campagne 4G rurale — config de base des routeurs d'antenne"
+  hosts: antennes_4g                           # les 50 ANTENNE-BOBO-xxx, pas le PE
+  gather_facts: false                          # pas de setup Linux sur IOS
+  serial: 10                                   # WHY : 10 boîtes à la fois, pas 50 d'un coup (risque change window)
+  roles:
+    - antenne_4g_cisco

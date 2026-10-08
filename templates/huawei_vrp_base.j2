@@ -1,0 +1,22 @@
+# WHY : même intention métier que Cisco, AUTRE dialecte CLI (sysname, Vlanif, undo shutdown).
+# C'est le cœur du multi-constructeur : une source de vérité, N templates.
+#
+sysname {{ hostname }}
+#
+{% for vlan in service_vlans %}
+vlan {{ vlan.id }}
+ description {{ vlan.name }}
+#
+{% endfor %}
+{% for iface in l3_interfaces %}
+interface {{ iface.name }}
+ description {{ iface.description }}
+ ip address {{ iface.ipv4 | cidr_to_address }} {{ iface.ipv4 | cidr_to_netmask }}
+{% if iface.enabled %}
+ undo shutdown
+{% else %}
+ shutdown
+{% endif %}
+#
+{% endfor %}
+return

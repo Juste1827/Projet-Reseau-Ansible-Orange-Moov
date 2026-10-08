@@ -1,0 +1,28 @@
+---
+# WHY Huawei ≠ Cisco : pas les mêmes resource modules dans community.network.
+# On rend un template VRP (idempotent à la génération), puis on pousse au CLI
+# seulement si live=true. cli_config n'envoie que le diff (diff_match: line).
+
+- name: "Refuser de configurer un Huawei sans sysname"
+  ansible.builtin.assert:
+    that:
+      - hostname is defined
+      - hostname | length > 0
+    fail_msg: "hostname manquant dans host_vars Huawei — abort"
+    success_msg: "sysname OK ({{ hostname }})"
+
+- name: "Écrire la config intended VRP sur le poste Ansible"
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/../templates/huawei_vrp_base.j2"
+    dest: "{{ playbook_dir }}/../intended/{{ inventory_hostname }}.cfg"
+    mode: "0644"
+  delegate_to: localhost
+  become: false
+  vars:
+    ansible_connection: local
+
+- name: "Pousser le delta CLI Huawei (uniquement live=true)"
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', playbook_dir + '/../templates/huawei_vrp_base.j2') }}"
+    diff_match: line                           # WHY : n'envoie que les lignes absentes du running-config
+  when: live | bool

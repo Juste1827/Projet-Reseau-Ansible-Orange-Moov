@@ -1,0 +1,7 @@
+---
+# WHY : ansible-lint = l'équivalent "eslint" d'Ansible. Un recruteur peut lancer la CI et voir vert.
+profile: basic
+skip_list:
+  - yaml[line-length]          # les commentaires pédagogiques sont volontairement longs
+  - risky-file-permissions     # lab Windows : mode 0644 suffit
+  - name[casing]               # noms de tasks en français

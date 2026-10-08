@@ -1,0 +1,22 @@
+---
+# WHY host_vars : ce qui est UNIQUE à CET équipement (hostname, IP d'interfaces).
+# Si tu copies ce fichier pour R3, tu changes les IP — le playbook, lui, ne change PAS.
+# C'est le contrat IaC : code générique + data par nœud.
+
+hostname: R1-PE-ABJ
+
+# Interfaces L3 à configurer (état désiré = source de vérité)
+# WHY CIDR dans le YAML : plus clair qu'un masque décimal ; le template convertit si besoin.
+l3_interfaces:
+  - name: GigabitEthernet0/0
+    description: "P2P-to-R2-Huawei"
+    ipv4: 10.0.0.1/30
+    enabled: true
+  - name: Vlan10
+    description: "SVI-DATA"
+    ipv4: 10.10.10.1/24
+    enabled: true
+  - name: Vlan20
+    description: "SVI-VOICE"
+    ipv4: 10.20.20.1/24
+    enabled: true

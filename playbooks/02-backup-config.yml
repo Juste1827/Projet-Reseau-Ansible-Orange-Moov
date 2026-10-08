@@ -1,0 +1,38 @@
+---
+# WHY backup AVANT le change : réflexe opérateur (rollback).
+# En lab sans boîte, les tasks SSH sont skip (live=false) : le playbook reste valable en entretien.
+
+- name: "Sauvegarder le running-config Cisco"
+  hosts: cisco
+  gather_facts: false
+  tasks:
+    - name: "show running-config (Cisco)"
+      cisco.ios.ios_command:                   # command = READ ONLY, ne change rien (sûr)
+        commands:
+          - show running-config
+      register: cisco_running                  # stocke la sortie pour l'écrire sur disque
+      when: live | bool
+
+    - name: "Écrire le backup Cisco sur le control node"
+      ansible.builtin.copy:
+        content: "{{ cisco_running.stdout[0] }}"
+        dest: "{{ playbook_dir }}/../backups/{{ inventory_hostname }}-{{ ansible_date_time.date | default('lab') }}.cfg"
+      delegate_to: localhost
+      when: live | bool and cisco_running is defined
+
+- name: "Sauvegarder le current-configuration Huawei"
+  hosts: huawei
+  gather_facts: false
+  tasks:
+    - name: "display current-configuration (Huawei)"
+      ansible.netcommon.cli_command:
+        command: display current-configuration
+      register: huawei_running
+      when: live | bool
+
+    - name: "Écrire le backup Huawei sur le control node"
+      ansible.builtin.copy:
+        content: "{{ huawei_running.stdout }}"
+        dest: "{{ playbook_dir }}/../backups/{{ inventory_hostname }}-lab.cfg"
+      delegate_to: localhost
+      when: live | bool and huawei_running is defined

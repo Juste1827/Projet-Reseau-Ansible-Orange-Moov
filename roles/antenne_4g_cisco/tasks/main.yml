@@ -1,0 +1,100 @@
+---
+# WHY un rôle "antenne" et pas 50 playbooks : Ansible itère sur l'inventaire.
+# 50 hôtes x ces tasks = la campagne. Le code ne grandit PAS avec le nombre de sites.
+
+- name: "Contrôler que chaque antenne a un hostname et une IP LAN uniques"
+  ansible.builtin.assert:                      # WHY assert : on refuse de pousser une conf incomplète
+    that:                                      # liste de conditions TOUTES vraies
+      - hostname is defined                    # sinon le module hostname enverrait une chaîne vide
+      - lan_ipv4 is defined                    # sinon interface sans IP = antenne morte
+      - lan_interface is defined               # Gi0/0 doit être dit, pas deviné
+    fail_msg: "host_vars incomplets pour {{ inventory_hostname }}"
+    success_msg: "{{ inventory_hostname }} {{ lan_interface }} {{ lan_ipv4 }}"
+
+# ---------------------------------------------------------------------------
+# Module 1 — cisco.ios.ios_config
+# WHY : envoyer des LIGNES CLI (équivalent de conf t). Idéal pour SSH / VTY
+# qui n'ont pas toujours un resource module simple. Idempotence = lignes EXACTES.
+# ---------------------------------------------------------------------------
+- name: "Module 1 : hostname via ios_config (équivalent de conf t + hostname ...)"
+  cisco.ios.ios_config:                        # brique "colle ces lignes dans la running-config"
+    lines:                                     # liste de commandes, une par ligne
+      - "hostname {{ hostname }}"              # interpolé : ANTENNE-BOBO-001, 002, ...
+  when: live | bool                            # lab Windows : skip SSH, pas d'erreur
+
+- name: "Module 1 (suite) : durcir SSH — version 2, timeout, retries"
+  cisco.ios.ios_config:
+    lines:
+      - "ip domain-name {{ ssh_domain }}"      # requis souvent avant clés SSH
+      - "ip ssh version 2"                     # interdit SSHv1 (faible)
+      - "ip ssh time-out {{ ssh_timeout }}"    # coupe les sessions pendantes
+      - "ip ssh authentication-retries {{ ssh_retries }}"  # anti brute-force léger
+  when: live | bool
+
+- name: "Module 1 (suite) : VTY 0-4 = SSH only (plus de Telnet en clair)"
+  cisco.ios.ios_config:
+    lines:
+      - "login local"                          # auth par user local (pas mot de passe ligne)
+      - "transport input ssh"                  # cause racine de sécu : Telnet = MDP en clair
+      - "exec-timeout {{ vty_exec_timeout_min }} 0"  # session idle => coupée
+    parents:                                   # WHY parents : ces lignes vivent SOUS "line vty 0 4"
+      - "line vty 0 4"
+  when: live | bool
+
+# ---------------------------------------------------------------------------
+# Module 2 — cisco.ios.ios_vlans
+# WHY resource module : tu déclares l'ÉTAT (vlan 10 existe, nommée DATA_TRAFFIC).
+# Relancer 10 fois : merged voit que c'est déjà là => changed=false.
+# ---------------------------------------------------------------------------
+- name: "Module 2 : VLAN 10 DATA_TRAFFIC (isolation du trafic data)"
+  cisco.ios.ios_vlans:
+    config:                                    # liste d'objets VLAN (schéma du module)
+      - vlan_id: "{{ data_vlan.id }}"          # 10
+        name: "{{ data_vlan.name }}"           # DATA_TRAFFIC
+        state: "{{ data_vlan.state }}"         # active (pas suspend)
+    state: merged                              # n'efface PAS les autres VLAN du site
+  when: live | bool
+
+# ---------------------------------------------------------------------------
+# Module 3 — cisco.ios.ios_interfaces  (couche 2 : description + no shutdown)
+# ERREUR COURANTE : mettre ipv4 ICI. Cause racine : ce module gère le PORT,
+# pas l'adresse. L'IP = Module 3b ios_l3_interfaces.
+# ---------------------------------------------------------------------------
+- name: "Module 3 : activer Gi0/0 et poser la description antenne"
+  cisco.ios.ios_interfaces:
+    config:
+      - name: "{{ lan_interface }}"            # GigabitEthernet0/0
+        description: "{{ lan_description }}"   # Lien vers l'antenne 4G
+        enabled: true                          # true = no shutdown
+    state: merged
+  when: live | bool
+
+- name: "Module 3b : IP LAN sur Gi0/0 (ios_l3_interfaces, PAS ios_interfaces)"
+  cisco.ios.ios_l3_interfaces:
+    config:
+      - name: "{{ lan_interface }}"
+        ipv4:
+          - address: "{{ lan_ipv4 }}"          # ex. 10.10.1.1/24 — UNIQUE par site
+    state: merged
+  when: live | bool
+
+# ---------------------------------------------------------------------------
+# Toujours : écrire l'intended sur le PC (preuve sans routeur)
+# ---------------------------------------------------------------------------
+- name: "Rendre la config intended de cette antenne (control node)"
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/../templates/antenne_cisco_ios.j2"
+    dest: "{{ playbook_dir }}/../intended/{{ inventory_hostname }}.cfg"
+    mode: "0644"
+  delegate_to: localhost
+  become: false
+  vars:
+    ansible_connection: local
+
+# ---------------------------------------------------------------------------
+# Module 4 — ansible.builtin.debug
+# WHY : visibilité. Sur 50 hôtes, le log dit QUELLE antenne est finie.
+# ---------------------------------------------------------------------------
+- name: "Module 4 : confirmer la fin de traitement de cet hôte"
+  ansible.builtin.debug:
+    msg: "OK {{ inventory_hostname }} | VLAN {{ data_vlan.id }} | {{ lan_interface }} {{ lan_ipv4 }} | SSH v2 | live={{ live }}"

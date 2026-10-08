@@ -1,0 +1,23 @@
+! WHY : état DÉSIRÉ Cisco, projeté depuis le YAML (hostname, VLAN, IP).
+! Idempotence : syntaxe identique au show running-config (commandes COMPLÈTES, pas d'abréviations).
+! Piège entretien : "int g0/0" ou "no shut" => Ansible croit que ça a changé à CHAQUE run.
+!
+hostname {{ hostname }}
+!
+{% for vlan in service_vlans %}
+vlan {{ vlan.id }}
+ name {{ vlan.name }}
+!
+{% endfor %}
+{% for iface in l3_interfaces %}
+interface {{ iface.name }}
+ description {{ iface.description }}
+ ip address {{ iface.ipv4 | cidr_to_address }} {{ iface.ipv4 | cidr_to_netmask }}
+{% if iface.enabled %}
+ no shutdown
+{% else %}
+ shutdown
+{% endif %}
+!
+{% endfor %}
+end

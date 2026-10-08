@@ -1,0 +1,13 @@
+---
+# WHY: copier ce fichier vers vault.yml puis : ansible-vault encrypt vault.yml
+# Jamais de mot de passe en clair dans Git. En entretien, montre vault.yml.example + la commande encrypt.
+#
+# Commandes :
+#   ansible-vault encrypt inventory/group_vars/all/vault.yml
+#   ansible-playbook playbooks/01-deploy-base.yml --ask-vault-pass
+#
+# ansible_password = mot de passe SSH de l'user ansible
+# ansible_become_password = secret enable Cisco (souvent différent)
+
+ansible_password: "CHANGE-ME-LAB-ONLY"
+ansible_become_password: "CHANGE-ME-ENABLE-ONLY"

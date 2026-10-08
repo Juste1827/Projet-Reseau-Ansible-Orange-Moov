@@ -1,0 +1,29 @@
+---
+# WHY ce groupe est SÉPARÉ de "cisco" (R1-PE-ABJ) :
+# même OS (IOS), AUTRE métier (cellule 4G vs PE cœur). Un playbook ≠ un autre.
+
+vendor: cisco
+os_family: ios
+intended_template: antenne_cisco_ios.j2
+
+# Connexion réseau (identique à un IOS classique)
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.ios.ios
+ansible_become: true
+ansible_become_method: enable
+ansible_user: ansible
+ansible_port: 22
+
+# --- Intention métier campagne 4G (identique pour les 50) ---
+data_vlan:
+  id: 10
+  name: DATA_TRAFFIC
+  state: active
+
+lan_description: "Lien vers l'antenne 4G"
+
+# SSH durci (politique opérateur, pas un "plus")
+ssh_domain: orange-lab.local
+ssh_timeout: 60
+ssh_retries: 3
+vty_exec_timeout_min: 5

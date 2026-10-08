@@ -1,0 +1,22 @@
+---
+# WHY group_vars/all = ce qui est vrai pour TOUS les équipements (politique commune).
+# Exemple opérateur : NTP, banner, timezone, VLANs de service — une seule fois, partout.
+
+# Site lab (histoire d'entretien : POP Abidjan, 2 PE multi-constructeurs)
+lab_site: ABJ
+lab_role: PE
+
+# WHY liste unique de VLANs : si tu ajoutes VLAN 30 ici, Cisco ET Huawei le reçoivent.
+# C'est ça, la reproductibilité multi-constructeurs : le métier (VLAN DATA/VOICE) n'est pas dupliqué.
+service_vlans:
+  - id: 10
+    name: DATA
+    description: "Client data LAN"
+  - id: 20
+    name: VOICE
+    description: "ToIP / signalling"
+
+# WHY : en lab on n'active PAS le push SSH par défaut.
+# Tu génères les configs (sûr). Le push se fait seulement si tu passes -e live=true
+# ET que tu as de vrais équipements (GNS3/EVE-NG/CML).
+live: false

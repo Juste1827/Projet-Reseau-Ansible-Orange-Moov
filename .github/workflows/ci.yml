@@ -1,0 +1,45 @@
+---
+# WHY CI : un dépôt d'entretien "vert" vaut plus qu'un ZIP de playbooks.
+# On teste ce qui est testable SANS routeur : rendu Python, idempotence, syntax Ansible.
+
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  render-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer le rendu local (Windows-equivalent)
+        run: pip install -r requirements.txt
+
+      - name: Preuve d'idempotence (10 rendus)
+        run: pytest -q
+
+      - name: Installer Ansible + collections
+        run: |
+          pip install "ansible-core>=2.17" ansible-lint
+          ansible-galaxy collection install -r requirements.yml
+
+      - name: Générer l'inventaire 50 antennes (idempotent)
+        run: python scripts/generate_antennes.py
+
+      - name: Syntax-check playbooks (ne SSH nulle part)
+        run: |
+          ansible-playbook --syntax-check playbooks/01-deploy-base.yml
+          ansible-playbook --syntax-check playbooks/04-antennes-4g.yml
+
+      - name: ansible-lint
+        run: ansible-lint playbooks roles
+        continue-on-error: true

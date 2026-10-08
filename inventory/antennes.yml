@@ -1,0 +1,260 @@
+---
+# FICHIER GÉNÉRÉ par scripts/generate_antennes.py — ne pas éditer à la main.
+# Source de vérité : data/antennes-bobo.csv (plan d'adressage campagne 4G).
+# WHY un groupe dédié antennes_4g (PAS cisco) : le playbook PE (01-deploy-base)
+# ne doit JAMAIS configurer une antenne avec la conf d'un routeur de cœur.
+
+all:
+  children:
+    antennes_4g:
+      hosts:
+        ANTENNE-BOBO-001:
+          ansible_host: 192.0.2.101
+          hostname: ANTENNE-BOBO-001
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.1.1/24
+        ANTENNE-BOBO-002:
+          ansible_host: 192.0.2.102
+          hostname: ANTENNE-BOBO-002
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.2.1/24
+        ANTENNE-BOBO-003:
+          ansible_host: 192.0.2.103
+          hostname: ANTENNE-BOBO-003
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.3.1/24
+        ANTENNE-BOBO-004:
+          ansible_host: 192.0.2.104
+          hostname: ANTENNE-BOBO-004
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.4.1/24
+        ANTENNE-BOBO-005:
+          ansible_host: 192.0.2.105
+          hostname: ANTENNE-BOBO-005
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.5.1/24
+        ANTENNE-BOBO-006:
+          ansible_host: 192.0.2.106
+          hostname: ANTENNE-BOBO-006
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.6.1/24
+        ANTENNE-BOBO-007:
+          ansible_host: 192.0.2.107
+          hostname: ANTENNE-BOBO-007
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.7.1/24
+        ANTENNE-BOBO-008:
+          ansible_host: 192.0.2.108
+          hostname: ANTENNE-BOBO-008
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.8.1/24
+        ANTENNE-BOBO-009:
+          ansible_host: 192.0.2.109
+          hostname: ANTENNE-BOBO-009
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.9.1/24
+        ANTENNE-BOBO-010:
+          ansible_host: 192.0.2.110
+          hostname: ANTENNE-BOBO-010
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.10.1/24
+        ANTENNE-BOBO-011:
+          ansible_host: 192.0.2.111
+          hostname: ANTENNE-BOBO-011
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.11.1/24
+        ANTENNE-BOBO-012:
+          ansible_host: 192.0.2.112
+          hostname: ANTENNE-BOBO-012
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.12.1/24
+        ANTENNE-BOBO-013:
+          ansible_host: 192.0.2.113
+          hostname: ANTENNE-BOBO-013
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.13.1/24
+        ANTENNE-BOBO-014:
+          ansible_host: 192.0.2.114
+          hostname: ANTENNE-BOBO-014
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.14.1/24
+        ANTENNE-BOBO-015:
+          ansible_host: 192.0.2.115
+          hostname: ANTENNE-BOBO-015
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.15.1/24
+        ANTENNE-BOBO-016:
+          ansible_host: 192.0.2.116
+          hostname: ANTENNE-BOBO-016
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.16.1/24
+        ANTENNE-BOBO-017:
+          ansible_host: 192.0.2.117
+          hostname: ANTENNE-BOBO-017
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.17.1/24
+        ANTENNE-BOBO-018:
+          ansible_host: 192.0.2.118
+          hostname: ANTENNE-BOBO-018
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.18.1/24
+        ANTENNE-BOBO-019:
+          ansible_host: 192.0.2.119
+          hostname: ANTENNE-BOBO-019
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.19.1/24
+        ANTENNE-BOBO-020:
+          ansible_host: 192.0.2.120
+          hostname: ANTENNE-BOBO-020
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.20.1/24
+        ANTENNE-BOBO-021:
+          ansible_host: 192.0.2.121
+          hostname: ANTENNE-BOBO-021
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.21.1/24
+        ANTENNE-BOBO-022:
+          ansible_host: 192.0.2.122
+          hostname: ANTENNE-BOBO-022
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.22.1/24
+        ANTENNE-BOBO-023:
+          ansible_host: 192.0.2.123
+          hostname: ANTENNE-BOBO-023
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.23.1/24
+        ANTENNE-BOBO-024:
+          ansible_host: 192.0.2.124
+          hostname: ANTENNE-BOBO-024
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.24.1/24
+        ANTENNE-BOBO-025:
+          ansible_host: 192.0.2.125
+          hostname: ANTENNE-BOBO-025
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.25.1/24
+        ANTENNE-BOBO-026:
+          ansible_host: 192.0.2.126
+          hostname: ANTENNE-BOBO-026
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.26.1/24
+        ANTENNE-BOBO-027:
+          ansible_host: 192.0.2.127
+          hostname: ANTENNE-BOBO-027
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.27.1/24
+        ANTENNE-BOBO-028:
+          ansible_host: 192.0.2.128
+          hostname: ANTENNE-BOBO-028
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.28.1/24
+        ANTENNE-BOBO-029:
+          ansible_host: 192.0.2.129
+          hostname: ANTENNE-BOBO-029
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.29.1/24
+        ANTENNE-BOBO-030:
+          ansible_host: 192.0.2.130
+          hostname: ANTENNE-BOBO-030
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.30.1/24
+        ANTENNE-BOBO-031:
+          ansible_host: 192.0.2.131
+          hostname: ANTENNE-BOBO-031
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.31.1/24
+        ANTENNE-BOBO-032:
+          ansible_host: 192.0.2.132
+          hostname: ANTENNE-BOBO-032
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.32.1/24
+        ANTENNE-BOBO-033:
+          ansible_host: 192.0.2.133
+          hostname: ANTENNE-BOBO-033
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.33.1/24
+        ANTENNE-BOBO-034:
+          ansible_host: 192.0.2.134
+          hostname: ANTENNE-BOBO-034
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.34.1/24
+        ANTENNE-BOBO-035:
+          ansible_host: 192.0.2.135
+          hostname: ANTENNE-BOBO-035
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.35.1/24
+        ANTENNE-BOBO-036:
+          ansible_host: 192.0.2.136
+          hostname: ANTENNE-BOBO-036
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.36.1/24
+        ANTENNE-BOBO-037:
+          ansible_host: 192.0.2.137
+          hostname: ANTENNE-BOBO-037
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.37.1/24
+        ANTENNE-BOBO-038:
+          ansible_host: 192.0.2.138
+          hostname: ANTENNE-BOBO-038
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.38.1/24
+        ANTENNE-BOBO-039:
+          ansible_host: 192.0.2.139
+          hostname: ANTENNE-BOBO-039
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.39.1/24
+        ANTENNE-BOBO-040:
+          ansible_host: 192.0.2.140
+          hostname: ANTENNE-BOBO-040
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.40.1/24
+        ANTENNE-BOBO-041:
+          ansible_host: 192.0.2.141
+          hostname: ANTENNE-BOBO-041
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.41.1/24
+        ANTENNE-BOBO-042:
+          ansible_host: 192.0.2.142
+          hostname: ANTENNE-BOBO-042
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.42.1/24
+        ANTENNE-BOBO-043:
+          ansible_host: 192.0.2.143
+          hostname: ANTENNE-BOBO-043
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.43.1/24
+        ANTENNE-BOBO-044:
+          ansible_host: 192.0.2.144
+          hostname: ANTENNE-BOBO-044
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.44.1/24
+        ANTENNE-BOBO-045:
+          ansible_host: 192.0.2.145
+          hostname: ANTENNE-BOBO-045
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.45.1/24
+        ANTENNE-BOBO-046:
+          ansible_host: 192.0.2.146
+          hostname: ANTENNE-BOBO-046
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.46.1/24
+        ANTENNE-BOBO-047:
+          ansible_host: 192.0.2.147
+          hostname: ANTENNE-BOBO-047
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.47.1/24
+        ANTENNE-BOBO-048:
+          ansible_host: 192.0.2.148
+          hostname: ANTENNE-BOBO-048
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.48.1/24
+        ANTENNE-BOBO-049:
+          ansible_host: 192.0.2.149
+          hostname: ANTENNE-BOBO-049
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.49.1/24
+        ANTENNE-BOBO-050:
+          ansible_host: 192.0.2.150
+          hostname: ANTENNE-BOBO-050
+          lan_interface: GigabitEthernet0/0
+          lan_ipv4: 10.10.50.1/24

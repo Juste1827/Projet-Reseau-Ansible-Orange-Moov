@@ -1,0 +1,5 @@
+# WHY: le rendu "intended config" doit marcher sur Windows SANS Ansible.
+# Ansible n'est pas supporté comme control node natif Windows : Jinja2 + PyYAML = ta démo locale.
+Jinja2>=3.1.0
+PyYAML>=6.0
+pytest>=8.0.0

@@ -1,0 +1,15 @@
+---
+# WHY ce playbook : point d'entrée unique "déploie la config de base".
+# Deux plays (cisco puis huawei) : isolation constructeur = un bug Cisco ne pousse pas du IOS sur du VRP.
+
+- name: "Play 1 — Cisco IOS : hostname, VLAN, IP"
+  hosts: cisco                                 # uniquement le groupe cisco de l'inventaire
+  gather_facts: false                          # pas de module setup Linux sur un routeur
+  roles:
+    - cisco_ios_base
+
+- name: "Play 2 — Huawei VRP : sysname, VLAN, IP"
+  hosts: huawei
+  gather_facts: false
+  roles:
+    - huawei_vrp_base

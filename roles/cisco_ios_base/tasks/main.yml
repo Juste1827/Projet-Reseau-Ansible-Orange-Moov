@@ -1,0 +1,55 @@
+---
+# WHY un RÔLE par constructeur :
+# tu réutilises cisco_ios_base sur N routeurs sans copier les tasks.
+# Le playbook orchestre ; le rôle parle "Cisco".
+
+- name: "Refuser de configurer un équipement sans hostname"
+  ansible.builtin.assert:                      # WHY assert : échouer AVANT le SSH, pas au milieu d'un conf t
+    that:
+      - hostname is defined
+      - hostname | length > 0
+    fail_msg: "hostname manquant dans host_vars — abort"
+    success_msg: "hostname OK ({{ hostname }})"
+
+- name: "Construire la liste VLAN au format du resource module cisco.ios.ios_vlans"
+  ansible.builtin.set_fact:                    # WHY set_fact : transformer NOTRE YAML métier vers le schéma Cisco
+    cisco_vlan_config: "{{ cisco_vlan_config | default([]) + [{'vlan_id': item.id, 'name': item.name, 'state': 'active'}] }}"
+  loop: "{{ service_vlans }}"
+  loop_control:
+    label: "VLAN {{ item.id }} {{ item.name }}"
+
+- name: "Construire la liste L3 au format cisco.ios.ios_l3_interfaces"
+  ansible.builtin.set_fact:
+    cisco_l3_config: "{{ cisco_l3_config | default([]) + [{'name': item.name, 'ipv4': [{'address': item.ipv4}]}] }}"
+  loop: "{{ l3_interfaces }}"
+  loop_control:
+    label: "{{ item.name }} {{ item.ipv4 }}"
+
+- name: "Appliquer le hostname (state=merged = idempotent)"
+  cisco.ios.ios_hostname:
+    config:
+      hostname: "{{ hostname }}"
+    state: merged                              # merged : pose hostname, ne touche pas au reste du running-config
+  when: live | bool                            # lab sans boîte : live=false, cette task est skip (pas d'erreur SSH)
+
+- name: "Appliquer les VLAN DATA/VOICE (merged : n'efface PAS les VLAN hors YAML)"
+  cisco.ios.ios_vlans:
+    config: "{{ cisco_vlan_config }}"
+    state: merged                              # WHY pas replaced : en prod, replaced pourrait supprimer un VLAN voix critique
+  when: live | bool
+
+- name: "Appliquer les adresses IPv4 d'interfaces (merged)"
+  cisco.ios.ios_l3_interfaces:
+    config: "{{ cisco_l3_config }}"
+    state: merged
+  when: live | bool
+
+- name: "Écrire la config intended sur le poste Ansible (preuve IaC, sans routeur)"
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/../templates/cisco_ios_base.j2"
+    dest: "{{ playbook_dir }}/../intended/{{ inventory_hostname }}.cfg"
+    mode: "0644"
+  delegate_to: localhost                       # fichier écrit CHEZ TOI
+  become: false
+  vars:
+    ansible_connection: local                  # override network_cli le temps du write disque

@@ -1,0 +1,29 @@
+# WHY: ne jamais versionner ce qui est généré, secret, ou local à ta machine.
+
+# Configs rendues localement (artefacts de démo)
+intended/*.cfg
+!intended/.gitkeep
+!intended/examples/
+
+# Secrets Ansible Vault (tu versionnes seulement les .example)
+*.vault
+vault_pass.txt
+.vault_pass
+inventory/group_vars/all/vault.yml
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+*.pyc
+
+# Ansible runtime
+*.retry
+.ansible/
+
+# OS / éditeur
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

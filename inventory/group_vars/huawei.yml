@@ -1,0 +1,16 @@
+---
+# WHY: Huawei VRP ≠ Cisco IOS. Même intention (hostname, VLAN, IP), autre syntaxe, autre module.
+
+vendor: huawei
+os_family: vrp
+
+# community.network.ce = cliconf CloudEngine ; la CLI VRP (sysname, Vlanif) est très proche.
+# En entretien : "en production NE/AR j'évaluerais huaweidatacom.ne, collection Huawei Datacom."
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: community.network.ce
+
+# VRP : le mode système se prend avec "system-view", pas "enable". become souvent false.
+ansible_become: false
+
+ansible_user: ansible
+ansible_port: 22

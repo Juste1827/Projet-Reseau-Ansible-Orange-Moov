@@ -1,0 +1,20 @@
+---
+# WHY: Ansible 2.10+ a sorti les modules réseau du "core".
+# On déclare les collections ici pour que le lab soit reproductible (même versions chez toi, en CI, en entretien).
+collections:
+  # Modules Cisco IOS (hostname, VLAN, interfaces L3) — projet officiel Cisco/Ansible
+  - name: cisco.ios
+    version: ">=9.0.0"
+
+  # Couche commune : connection network_cli, cli_config, cli_command
+  - name: ansible.netcommon
+    version: ">=7.0.0"
+
+  # Utilitaires (IP, CIDR) parfois utilisés par les resource modules
+  - name: ansible.utils
+    version: ">=5.0.0"
+
+  # Huawei CloudEngine / VRP côté communauté (CLI proche des routeurs VRP)
+  # HONNÊTETÉ ENTRETIEN : collection en maintenance ; en prod Orange on citerait aussi huaweidatacom.ne
+  - name: community.network
+    version: ">=5.0.0"

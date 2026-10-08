@@ -1,0 +1,7 @@
+---
+# WHY : ansible-playbook --check = dry-run (ne commit pas la conf).
+# C'est LE réflexe prod : check + diff, lecture humaine, puis apply.
+# Ici on réutilise 01-deploy-base.yml via import pour ne pas dupliquer la logique.
+
+- name: "Dry-run de la config de base (même code que le deploy)"
+  ansible.builtin.import_playbook: 01-deploy-base.yml

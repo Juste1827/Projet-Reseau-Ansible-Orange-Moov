@@ -1,0 +1,24 @@
+! WHY : config INTENDED d'une cellule 4G rurale (hostname, VLAN data, LAN, SSH).
+! Idempotence : commandes COMPLÈTES = celles d'un show running-config.
+!
+hostname {{ hostname }}
+!
+vlan {{ data_vlan.id }}
+ name {{ data_vlan.name }}
+!
+interface {{ lan_interface }}
+ description {{ lan_description }}
+ ip address {{ lan_ipv4 | cidr_to_address }} {{ lan_ipv4 | cidr_to_netmask }}
+ no shutdown
+!
+ip domain-name {{ ssh_domain }}
+ip ssh version 2
+ip ssh time-out {{ ssh_timeout }}
+ip ssh authentication-retries {{ ssh_retries }}
+!
+line vty 0 4
+ login local
+ transport input ssh
+ exec-timeout {{ vty_exec_timeout_min }} 0
+!
+end
